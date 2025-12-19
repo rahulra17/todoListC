@@ -66,28 +66,53 @@ void TaskManager::complete(int id){
 }
 
 void TaskManager::remove(int id, std::filesystem::path file_path){
+    /*
+    //look for this string
     std::ostringstream search_ostream;
-
     search_ostream << task_list.at(id);
-
     std::string search_for = search_ostream.str();
 
-    std::cout << "this is what im searching for: " << search_for << std::endl; 
+    std::string replace_with = "";
 
-
-    task_list.erase(id);
+    //open file for reading
+    std::ifstream input_file(file_path);
     std::ostringstream data;
-
-    //read file
-    std::ifstream in_stream(file_path);
-
-    data << in_stream.rdbuf();
-
+    data << input_file.rdbuf();
     //close read file since we have all of it in data
-    in_stream.close();
+    input_file.close();
+    */
+    //remove from task_list 
+    task_list.erase(id);
 
+    std::ofstream output_file(file_path, std::ios::trunc);
+
+
+    //TODO - Use iterators instead of for loop
+    for(const auto& pair : task_list){
+        output_file << pair.second << "\n";
+    }
+
+
+
+
+    /*
     std::string file_contents = data.str();
 
     size_t pos = file_contents.find(search_for);
+
+    
+    if(pos != std::string::npos) {
+        file_contents.erase(pos, search_for.length());
+    }
+
+    std::ofstream output(file_path, std::ios::trunc);
+
+    if (!output.is_open()) {
+        std::cerr << "Error opening file for writing" << std::endl;
+    }
+
+    output << file_contents;
+    output.close();
+    */
 
 }
