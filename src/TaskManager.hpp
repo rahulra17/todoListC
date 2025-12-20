@@ -13,6 +13,7 @@ class TaskManager{
         std::filesystem::path data;
         int nextId;
         int longestString;
+        void updateFile(std::filesystem::path file_path);
 
     public:
         TaskManager(std::filesystem::path data);
@@ -21,7 +22,7 @@ class TaskManager{
 
         void list();
 
-        void complete(int id);
+        void complete(int id, std::filesystem::path file_path);
 
         void remove(int id, std::filesystem::path file_path);
 };

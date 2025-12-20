@@ -16,6 +16,6 @@ void Task::complete(){
 
 void Task::formatListRow(int biggestNum, int longestStringLength){
     std::string completeString = this->completed ? "[X]" : "[]";
-    std::cout << std::right;
-    std::cout << this->id << std::setw(biggestNum+ 4) << completeString << std::setw(longestStringLength + 8) << this->description << std::endl;
+    std::cout << std::left;
+    std::cout << std::setw(biggestNum + 4) << this->id << std::setw(8) << completeString << this->description << std::endl;
 }

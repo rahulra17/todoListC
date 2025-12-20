@@ -26,6 +26,14 @@ int main(int argc, char* argv[]) {
                 return -1;
             }
         } 
+        else if(arg == "complete"){
+            if(argv[2]) {
+                t.complete(std::stoi(argv[2]), file_path);
+            } else {
+                std::cerr << "Error: No Task Description Found" << std::endl;
+                return -1;
+            }
+        }
         else if(arg == "list") {
             t.list();
         }
