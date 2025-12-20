@@ -24,20 +24,32 @@ std::vector<std::string> parseData(std::string dataLine) {
 
 TaskManager::TaskManager(std::filesystem::path data){
     this->data = data;
-    this->nextId = 0;
+    this->nextId = 1;
+    this->longestString = 0;
     // Load any data already in file into map
     std::ifstream inputFile(data);
     if (!inputFile.is_open()) {
         std::cerr << "Error: Unable to open the file example.txt" << std::endl;
     }
     std::string currLine;
+    // Loop through file and parse through data already there
     while(std::getline(inputFile, currLine)){
         std::vector<std::string> currData = parseData(currLine);
+
+        // Separate Data Appropriately
         int currId = std::stoi(currData[0]);
         std::string currDescription = currData[2];
         bool currCompletion = static_cast<bool>(std::stoi(currData[1]));
+
+        // Keep track of longest string length for list formatting
+        if(currDescription.length() > this->longestString){
+            this->longestString = currDescription.length();
+        }
+        // Create and insert task to map
         Task t(currId, currDescription, currCompletion);
         task_list.insert({currId, t});
+
+        // Increment the next id for usage
         nextId = currId + 1;
     }
 
@@ -52,67 +64,59 @@ TaskManager::TaskManager(std::filesystem::path data){
 void TaskManager::add(std::string description, std::filesystem::path file_path) {
     std::ofstream outFile(file_path, std::ios::app);
     Task t(nextId, description);
+    // if the file is empty put on line 1, otherwise new line
+    if(task_list.size() > 0) {
+        std::cout << "I got here" << std::endl;
+        outFile << '\n' << t; 
+    } else {
+        outFile << t;
+    }
     task_list.insert({nextId, t});
-    outFile << '\n' << t; 
     outFile.close();
+
+    // Keep track of longest string
+    if(description.length() > longestString){
+        longestString = description.length();
+    }
+    
+    std::cout << "[Success] Added Task " << description << "(ID:" << nextId << ")" << std::endl;
+
+    // Keep track of nextId
+    nextId++;
+
 }
 
 void TaskManager::list(){
-
+    Task& t = task_list.at(1);
+    std::cout << "lets see what this looks like" << std::endl;
+    int longestNum    = std::to_string(nextId).length();
+    t.formatListRow(longestNum, this->longestString);
 }
 
 void TaskManager::complete(int id){
+    Task& t = task_list.at(id);
+    t.complete();
 
+    std::cout << "Task " << id << " has been completed" << std::endl;
 }
 
 void TaskManager::remove(int id, std::filesystem::path file_path){
-    /*
-    //look for this string
-    std::ostringstream search_ostream;
-    search_ostream << task_list.at(id);
-    std::string search_for = search_ostream.str();
-
-    std::string replace_with = "";
-
-    //open file for reading
-    std::ifstream input_file(file_path);
-    std::ostringstream data;
-    data << input_file.rdbuf();
-    //close read file since we have all of it in data
-    input_file.close();
-    */
     //remove from task_list 
     task_list.erase(id);
 
     std::ofstream output_file(file_path, std::ios::trunc);
 
+    auto it = task_list.begin();
+    auto end = task_list.end();
+    output_file << it->second;
+    it++;
 
-    //TODO - Use iterators instead of for loop
-    for(const auto& pair : task_list){
-        output_file << pair.second << "\n";
+    // Use iterators for file formatting purposes
+    while(it != end){
+        output_file << '\n' << it->second;
+        it++;
     }
 
-
-
-
-    /*
-    std::string file_contents = data.str();
-
-    size_t pos = file_contents.find(search_for);
-
-    
-    if(pos != std::string::npos) {
-        file_contents.erase(pos, search_for.length());
-    }
-
-    std::ofstream output(file_path, std::ios::trunc);
-
-    if (!output.is_open()) {
-        std::cerr << "Error opening file for writing" << std::endl;
-    }
-
-    output << file_contents;
-    output.close();
-    */
+    std::cout << "[Success] Task " << id << " has been permanently deleted.";
 
 }

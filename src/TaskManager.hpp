@@ -10,9 +10,9 @@
 class TaskManager{
     private:
         std::map<int, Task> task_list;
-        std::vector<bool> completions;
         std::filesystem::path data;
         int nextId;
+        int longestString;
 
     public:
         TaskManager(std::filesystem::path data);

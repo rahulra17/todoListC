@@ -25,6 +25,9 @@ int main(int argc, char* argv[]) {
                 std::cerr << "Error: No Task ID found" << std::endl;
                 return -1;
             }
+        } 
+        else if(arg == "list") {
+            t.list();
         }
     }
 

@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 
+
 struct Task {
     private: 
         int id;
@@ -24,6 +25,10 @@ struct Task {
             this->description = description;
             this->completed = completed;
         }
+
+        void complete();
+
+        void formatListRow(int biggestNum, int longestStringLength);
 
         friend std::ostream& operator<<(std::ostream& os, const Task& t);
 };
